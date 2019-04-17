@@ -101,7 +101,6 @@ func (e *Exporter) CollectServiceType(ch chan<- prometheus.Metric, desc *prometh
 
 // 实现了prometheus.collector
 func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
-	log.Info("call Exporter.Collect function.")
 	// 调用数据接口，返回动态数据
 	services := e.client.data(dataSource())
 	for k := range services {
