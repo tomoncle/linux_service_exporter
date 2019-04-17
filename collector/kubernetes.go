@@ -53,7 +53,7 @@ var (
 
 	// 构造 kubelet 服务
 	kubelet = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, subsystem, "let"),
+		prometheus.BuildFQName(namespace, subsystem, "kubelet"),
 		"kubernetes service of kubelet.",
 		[]string{"host", "service"}, nil,
 	)
