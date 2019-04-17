@@ -8,7 +8,7 @@ Prometheus linux service exporter.
 
 ### install
 ```bash
-$ go get tomoncle/linux_service_exporter
-$ cd $GO_PATH/src/github.com/tomoncle/linux_service_exporter
+$ go get github.com/tomoncle/linux_service_exporter
+$ cd $GOPATH/src/github.com/tomoncle/linux_service_exporter
 $ go build linux_service_exporter.go
 ```
