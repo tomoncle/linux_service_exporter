@@ -1,20 +1,28 @@
+/*
+Copyright 2019 tomoncle.
+
+Licensed under the GNU General Public License, Version 3 (the "License")
+*/
+
 package collector
 
 import (
+	"fmt"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/log"
-	"fmt"
-	"math/rand"
+	"github.com/tomoncle/linux_service_exporter/tools"
 	"strconv"
 )
 
 const (
-	namespace    = "service"
-	subsystem    = "kube"
+	namespace = "service"
+	subsystem = "kube"
 	//labels       =  []string{"host", "service"}
 )
 
 var (
+	ipAddress, _ = tools.GetInterface()
+
 	// 构造 kube-apiserver 服务
 	kubeApiserver = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, subsystem, "apiserver"),
@@ -49,30 +57,23 @@ var (
 		"kubernetes service of kubelet.",
 		[]string{"host", "service"}, nil,
 	)
-
 )
+
+func serviceInfo(serviceName string) map[string]string {
+	status, _ := tools.CentOSServiceActive(serviceName)
+	return map[string]string{
+		"host": ipAddress, "service": serviceName, "value": fmt.Sprint(status)}
+}
 
 // 构造数据源
 func dataSource() map[string]interface{} {
-	log.Info("调用数据源...")
-	servicesA := []map[string]string{
-		{"service_id": "a1", "service_name": "serviceA1", "value": fmt.Sprint(rand.Float64())},
-		{"service_id": "a2", "service_name": "serviceA2", "value": fmt.Sprint(rand.Float64())},
+	return map[string]interface{}{
+		"kube-apiserver":          serviceInfo("kube-apiserver"),
+		"kube-controller-manager": serviceInfo("kube-controller-manager"),
+		"kube-scheduler":          serviceInfo("kube-scheduler"),
+		"kube-proxy":              serviceInfo("kube-proxy"),
+		"kubelet":                 serviceInfo("kubelet"),
 	}
-	servicesB := []map[string]string{
-		{"service_id": "b1", "service_name": "serviceB1", "value": fmt.Sprint(rand.Float64())},
-		{"service_id": "b2", "service_name": "serviceB2", "value": fmt.Sprint(rand.Float64())},
-	}
-	servicesC := []map[string]string{
-		{"service_id": "c1", "service_name": "serviceC1", "value": fmt.Sprint(rand.Float64())},
-		{"service_id": "c2", "service_name": "serviceC2", "value": fmt.Sprint(rand.Float64())},
-	}
-	servicesD := []map[string]string{
-		{"service_id": "d1", "service_name": "serviceD1", "value": fmt.Sprint(rand.Float64())},
-		{"service_id": "d2", "service_name": "serviceD2", "value": fmt.Sprint(rand.Float64())},
-	}
-
-	return map[string]interface{}{"a": servicesA, "b": servicesB, "c": servicesC, "d": servicesD,}
 }
 
 // 描述服务导出的所有度量指标
@@ -94,7 +95,7 @@ func (e *Exporter) CollectServiceType(ch chan<- prometheus.Metric, desc *prometh
 	}
 	// 更新ch对象中的prometheus.Desc类型数据
 	ch <- prometheus.MustNewConstMetric(
-		desc, prometheus.GaugeValue, f, serviceMap["service_id"], serviceMap["service_name"],
+		desc, prometheus.GaugeValue, f, serviceMap["host"], serviceMap["service"],
 	)
 }
 
@@ -104,26 +105,17 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 	// 调用数据接口，返回动态数据
 	services := e.client.data(dataSource())
 	for k := range services {
-		servicesList := services[k].([]map[string]string)
-		if k == "a" {
-			for _, serviceMap := range servicesList {
-				e.CollectServiceType(ch, kubeApiserver, serviceMap)
-			}
-
-		} else if k == "b" {
-			for _, serviceMap := range servicesList {
-				e.CollectServiceType(ch, kubeControllerManager, serviceMap)
-			}
-
-		} else if k == "c" {
-			for _, serviceMap := range servicesList {
-				e.CollectServiceType(ch, kubeScheduler, serviceMap)
-			}
-
-		} else if k == "d" {
-			for _, serviceMap := range servicesList {
-				e.CollectServiceType(ch, kubeProxy, serviceMap)
-			}
+		serviceMap := services[k].(map[string]string)
+		if k == "kube-apiserver" {
+			e.CollectServiceType(ch, kubeApiserver, serviceMap)
+		} else if k == "kube-controller-manager" {
+			e.CollectServiceType(ch, kubeControllerManager, serviceMap)
+		} else if k == "kube-scheduler" {
+			e.CollectServiceType(ch, kubeScheduler, serviceMap)
+		} else if k == "kube-proxy" {
+			e.CollectServiceType(ch, kubeProxy, serviceMap)
+		} else if k == "kubelet" {
+			e.CollectServiceType(ch, kubelet, serviceMap)
 		} else {
 			log.Error("未知的服务.", k)
 		}

@@ -1,13 +1,19 @@
+/*
+Copyright 2019 tomoncle.
+
+Licensed under the GNU General Public License, Version 3 (the "License")
+*/
+
 package main
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
-	"net/http"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"gopkg.in/alecthomas/kingpin.v2"
 	"github.com/prometheus/common/log"
 	"github.com/prometheus/common/version"
 	collect "github.com/tomoncle/linux_service_exporter/collector"
+	"gopkg.in/alecthomas/kingpin.v2"
+	"net/http"
 )
 
 func init() {
