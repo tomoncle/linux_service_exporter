@@ -9,7 +9,7 @@ package collector
 import "github.com/prometheus/common/log"
 
 const (
-	// export name
+	// ExporterName define this service name
 	ExporterName = "service_exporter"
 )
 
