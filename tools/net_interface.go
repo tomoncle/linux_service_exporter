@@ -12,6 +12,7 @@ import (
 	"net"
 )
 
+// GetInterface returns VM's first ip addr
 func GetInterface() (string, error) {
 	addresses, err := net.InterfaceAddrs()
 	if err != nil {

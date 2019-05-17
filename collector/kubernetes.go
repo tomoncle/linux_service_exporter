@@ -59,13 +59,14 @@ var (
 	)
 )
 
+// serviceInfo returns "map" format data
 func serviceInfo(serviceName string) map[string]string {
 	status, _ := tools.CentOSServiceActive(serviceName)
 	return map[string]string{
 		"host": ipAddress, "service": serviceName, "value": fmt.Sprint(status)}
 }
 
-// 构造数据源
+// dataSource returns kubernetes service status.
 func dataSource() map[string]interface{} {
 	return map[string]interface{}{
 		"kube-apiserver":          serviceInfo("kube-apiserver"),
@@ -76,7 +77,7 @@ func dataSource() map[string]interface{} {
 	}
 }
 
-// 描述服务导出的所有度量指标
+// Describe returns kubernetes services of the collector.
 func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 	log.Info("call Exporter.Describe function.")
 	ch <- kubeApiserver
@@ -86,7 +87,7 @@ func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 	ch <- kubelet
 }
 
-// 根据服务类型收集从配置的服务统计信息
+// CollectServiceType 根据服务类型收集从配置的服务统计信息
 func (e *Exporter) CollectServiceType(ch chan<- prometheus.Metric, desc *prometheus.Desc, serviceMap map[string]string) {
 	f, err := strconv.ParseFloat(serviceMap["value"], 64)
 	if err != nil {
@@ -99,7 +100,7 @@ func (e *Exporter) CollectServiceType(ch chan<- prometheus.Metric, desc *prometh
 	)
 }
 
-// 实现了prometheus.collector
+// Collect 实现了prometheus.collector
 func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 	// 调用数据接口，返回动态数据
 	services := e.client.data(dataSource())

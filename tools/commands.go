@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-// 获取linux系统服务状态
+// CentOSServiceActive 获取linux系统服务状态
 // active --> true ; dead  --> false
 func CentOSServiceActive(serviceName string) (int64, error) {
 	cmd := exec.Command("systemctl", "status", serviceName)
