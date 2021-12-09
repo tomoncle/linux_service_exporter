@@ -4,13 +4,13 @@
 Prometheus linux service exporter.
 
 ### require
-* go version : 1.9.0+
-* prometheus : 2.0.0+
-* os         : linux
+* go version : `1.17.0+`
+* prometheus : `2.0.0+`
+* os         : `linux`
 
-### install
+### build
 ```bash
-$ go get github.com/tomoncle/linux_service_exporter
-$ cd $GOPATH/src/github.com/tomoncle/linux_service_exporter
+$ git clone https://github.com/tomoncle/linux_service_exporter
+$ cd linux_service_exporter && go mod download
 $ go build linux_service_exporter.go
 ```
