@@ -6,8 +6,6 @@ Licensed under the GNU General Public License, Version 3 (the "License")
 
 package collector
 
-import "github.com/prometheus/common/log"
-
 const (
 	// ExporterName define this service name
 	ExporterName = "service_exporter"
@@ -37,7 +35,7 @@ type ServiceOpts struct {
 // NewExporter 返回一个初始化的 Exporter.
 func NewExporter(opts ServiceOpts) (*Exporter, error) {
 	client := &ServiceClient{ServiceName: opts.Name}
-	log.Info("注册服务名称为：", client.ServiceName)
+	//log.Info("注册服务名称为：", client.ServiceName)
 	// Init our exporter.
 	return &Exporter{
 		client: client,

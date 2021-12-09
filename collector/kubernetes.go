@@ -79,7 +79,7 @@ func dataSource() map[string]interface{} {
 
 // Describe returns kubernetes services of the collector.
 func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
-	log.Info("call Exporter.Describe function.")
+	// log.Info("call Exporter.Describe function.")
 	ch <- kubeApiserver
 	ch <- kubeControllerManager
 	ch <- kubeScheduler

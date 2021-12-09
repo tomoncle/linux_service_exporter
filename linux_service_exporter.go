@@ -17,7 +17,7 @@ import (
 )
 
 func init() {
-	log.Info("call init function.")
+	//log.Info("call init function.")
 	prometheus.MustRegister(version.NewCollector(collect.ExporterName))
 }
 
@@ -48,7 +48,7 @@ func main() {
 
 	http.Handle(*metricsPath, promhttp.Handler())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`<html>
+		_, _ = w.Write([]byte(`<html>
              <head><title>Service Exporter</title></head>
              <body>
              <h1>Service Exporter</h1>
