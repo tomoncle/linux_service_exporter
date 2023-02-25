@@ -18,5 +18,5 @@ require (
 	github.com/prometheus/client_model v0.0.0-20190129233127-fd36f4220a90 // indirect
 	github.com/prometheus/procfs v0.0.0-20190225181712-6ed1f7e10411 // indirect
 	github.com/sirupsen/logrus v1.4.2-0.20190403091019-9b3cdde74fbe // indirect
-	golang.org/x/sys v0.0.0-20181116152217-5ac8a444bdc5 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 )
